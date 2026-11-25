@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0f1115">
+  <title>Home Hub</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="clock">
+      <div id="time" class="time">--:--</div>
+      <div id="date" class="date"></div>
+    </div>
+    <div class="topbar-right">
+      <div id="banner" class="banner" hidden></div>
+      <button id="refresh" class="icon-btn" type="button" aria-label="Refresh">&#x21bb;</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="cameras" aria-label="Cameras">
+      <h2 class="section-title">Cameras</h2>
+      <div id="camera-grid" class="camera-grid">
+        <p class="empty">Loading&hellip;</p>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section aria-label="Security">
+        <h2 class="section-title">Security</h2>
+        <div id="alarms" class="stack"></div>
+      </section>
+      <section aria-label="Lights">
+        <h2 class="section-title">Lights</h2>
+        <div id="lights" class="stack"></div>
+      </section>
+      <section class="events-section" aria-label="Recent activity">
+        <h2 class="section-title">Recent activity</h2>
+        <ul id="events" class="events"></ul>
+      </section>
+    </aside>
+  </main>
+
+  <div id="viewer" class="overlay" hidden>
+    <div class="viewer-box">
+      <div class="viewer-head">
+        <span id="viewer-title"></span>
+        <button id="viewer-close" class="icon-btn" type="button" aria-label="Close">&times;</button>
+      </div>
+      <img id="viewer-img" alt="">
+      <div class="viewer-actions">
+        <button id="viewer-snap" class="btn" type="button">New snapshot</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pin" class="overlay" hidden>
+    <div class="pin-box">
+      <div id="pin-title" class="pin-title">Enter PIN</div>
+      <div id="pin-dots" class="pin-dots"></div>
+      <div id="pin-pad" class="pin-pad"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

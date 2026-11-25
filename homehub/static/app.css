@@ -1,0 +1,262 @@
+/* Home Hub: sized for Fire HD 8 and HD 10 in landscape (and works in portrait).
+ * GUESS: Silk on Fire HD 8 reports roughly 960x600 CSS px in landscape and
+ * HD 10 roughly 1280x800. Breakpoints below assume those numbers. */
+
+:root {
+  --bg: #0f1115;
+  --panel: #181b22;
+  --panel-2: #20242d;
+  --line: #2b303b;
+  --text: #eef1f6;
+  --muted: #9aa3b2;
+  --accent: #4f8cff;
+  --ok: #3ecf8e;
+  --warn: #f5b041;
+  --danger: #ff5d5d;
+  --radius: 14px;
+  --gap: 14px;
+  --tap: 56px;           /* minimum touch target */
+  --font: system-ui, -apple-system, "Roboto", "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #eef1f5;
+    --panel: #ffffff;
+    --panel-2: #f3f5f8;
+    --line: #dde2ea;
+    --text: #151922;
+    --muted: #5d6676;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.35 var(--font);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;           /* wall display: no page scroll in landscape */
+  display: flex;
+  flex-direction: column;
+}
+
+button { font: inherit; color: inherit; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  padding-left: max(18px, env(safe-area-inset-left));
+  padding-right: max(18px, env(safe-area-inset-right));
+}
+.time { font-size: 40px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; }
+.date { color: var(--muted); font-size: 15px; margin-top: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.banner {
+  background: rgba(255, 93, 93, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(255, 93, 93, 0.4);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  max-width: 420px;
+}
+.icon-btn {
+  min-width: var(--tap); height: var(--tap);
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 24px;
+  cursor: pointer;
+}
+.icon-btn:active { transform: scale(0.95); }
+
+/* ---------- layout ---------- */
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--gap);
+  padding: 0 18px 18px;
+}
+.cameras, .side { min-height: 0; display: flex; flex-direction: column; }
+.side { gap: var(--gap); overflow-y: auto; }
+.section-title {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px;
+}
+.empty { color: var(--muted); }
+
+/* ---------- cameras ---------- */
+.camera-grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  /* app.js sets --cols from the camera count so a typical home (2-6
+     cameras) fills the screen without scrolling; more than that scrolls. */
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  grid-auto-rows: minmax(190px, 1fr);
+  gap: var(--gap);
+}
+.cam {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.cam-img {
+  position: relative;
+  flex: 1;
+  min-height: 90px;
+  background: #000 center / cover no-repeat;
+  cursor: pointer;
+}
+.cam-img .badge {
+  position: absolute; top: 8px; left: 8px;
+  background: rgba(0, 0, 0, 0.6); color: #fff;
+  font-size: 12px; padding: 3px 8px; border-radius: 999px;
+}
+.cam-img .offline {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; background: rgba(0, 0, 0, 0.55); font-weight: 600;
+}
+.cam-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.cam-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.cam-name { font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.meta .low { color: var(--warn); }
+.row { display: flex; gap: 8px; }
+.row .btn { flex: 1; }
+
+/* ---------- controls ---------- */
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.tile {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  min-height: 68px;
+}
+.tile-name { font-weight: 600; }
+.tile-state { color: var(--muted); font-size: 13px; }
+.tile-state.armed { color: var(--danger); }
+.tile-state.on { color: var(--warn); }
+
+.btn {
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn[disabled] { opacity: 0.5; }
+
+/* toggle switch */
+.switch {
+  position: relative; width: 72px; height: 40px; flex: none;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--panel-2);
+  cursor: pointer; padding: 0;
+}
+.switch::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 32px; height: 32px; border-radius: 50%; background: var(--muted);
+  transition: transform 0.15s ease;
+}
+.switch[aria-checked="true"] { background: var(--warn); border-color: var(--warn); }
+.switch[aria-checked="true"]::after { transform: translateX(32px); background: #fff; }
+
+/* ---------- events ---------- */
+.events-section { flex: 1; min-height: 120px; display: flex; flex-direction: column; }
+.events {
+  list-style: none; margin: 0; padding: 0;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  overflow-y: auto; flex: 1;
+}
+.events li { display: flex; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--line); font-size: 14px; }
+.events li:first-child { border-top: 0; }
+.events .ev-kind { font-weight: 600; text-transform: capitalize; }
+.events .ev-when { margin-left: auto; color: var(--muted); white-space: nowrap; }
+.events .ev-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-top: 5px; flex: none; }
+.events .ev-dot.ding { background: var(--warn); }
+.events .ev-dot.motion { background: var(--danger); }
+
+/* ---------- overlays ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.overlay[hidden], .toast[hidden], .banner[hidden] { display: none; }
+.viewer-box {
+  background: var(--panel); border-radius: var(--radius);
+  width: min(1100px, 100%); max-height: 100%;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.viewer-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 8px 16px; font-weight: 600; font-size: 18px; }
+#viewer-img { width: 100%; min-height: 0; flex: 1; object-fit: contain; background: #000; }
+.viewer-actions { padding: 10px; display: flex; justify-content: flex-end; }
+
+.pin-box { background: var(--panel); border-radius: var(--radius); padding: 18px; width: 320px; text-align: center; }
+.pin-title { font-weight: 600; font-size: 18px; }
+.pin-dots { height: 28px; margin: 10px 0; font-size: 28px; letter-spacing: 10px; }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pin-pad .btn { min-height: 60px; font-size: 22px; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  background: var(--panel-2); border: 1px solid var(--line);
+  padding: 12px 18px; border-radius: 12px; z-index: 20;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+.toast.error { border-color: var(--danger); color: var(--danger); }
+
+/* ---------- Fire HD 10 landscape (~1280x800) ---------- */
+@media (min-width: 1200px) {
+  :root { --gap: 16px; }
+  .layout { grid-template-columns: 1fr 380px; padding: 0 22px 22px; }
+  .time { font-size: 48px; }
+}
+
+/* ---------- Fire HD 8 landscape (~960x600) ---------- */
+@media (max-height: 640px) and (min-width: 800px) {
+  .topbar { padding-top: 6px; padding-bottom: 6px; }
+  .time { font-size: 32px; }
+  .date { font-size: 13px; }
+  .layout { grid-template-columns: 1fr 290px; }
+  .cam-body { padding: 8px 10px 10px; gap: 6px; }
+  .tile { min-height: 60px; padding: 8px 10px; }
+}
+
+/* ---------- portrait (HD 8 ~600x960, HD 10 ~800x1280) ---------- */
+@media (max-width: 799px), (orientation: portrait) {
+  body { overflow: auto; }
+  .layout { display: flex; flex-direction: column; }
+  .cameras, .camera-grid, .side { flex: none; min-height: auto; }
+  .camera-grid { overflow: visible; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); grid-auto-rows: auto; }
+  .cam-img { flex: none; aspect-ratio: 16 / 9; }
+  .side { overflow: visible; }
+  .events-section { min-height: 0; }
+  .events { max-height: 360px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch::after { transition: none; }
+}

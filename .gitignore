@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.homehub/
+*_token.json
+*_credentials.json
